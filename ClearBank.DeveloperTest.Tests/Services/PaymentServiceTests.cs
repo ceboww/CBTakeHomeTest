@@ -32,6 +32,7 @@ namespace ClearBank.DeveloperTest.Tests.Services
             };
             account = new Account
             {
+                AccountNumber = "123456789",
                 Balance = 66.66m
             };
 
@@ -57,12 +58,11 @@ namespace ClearBank.DeveloperTest.Tests.Services
         {
             mockPaymentValidator.Setup(validator => validator.CheckPaymentValid(makePaymentRequest, account))
                 .Returns(true);
-            mockDataStore.Setup(store => store.UpdateAccount(account));
+            mockDataStore.Setup(store => store.UpdateAccount(It.Is<Account>(acc => acc.Balance == 44.44m && acc.AccountNumber == "123456789")));
             
             var result = paymentService.MakePayment(makePaymentRequest);
             
             Assert.That(result.Success, Is.True);
-            Assert.That(account.Balance, Is.EqualTo(44.44m));
         }
 
         [TearDown]
